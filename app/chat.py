@@ -3,11 +3,28 @@ from app.llm import extract_profile, generate_reply
 from app.retrieval import retrieve
 
 
+def has_enough_info_for_recommendation(profile):
+    return bool(
+        profile.role
+        and (
+            profile.seniority
+            or profile.language
+            or profile.technical_skills
+            or profile.soft_skills
+            or profile.assessment_types
+            or profile.industry
+        )
+    )
+
+
 def need_clarification(profile):
     if not profile.role:
         return True
 
-    return not profile.complete
+    if profile.complete:
+        return False
+
+    return not has_enough_info_for_recommendation(profile)
 
 
 def clarification_question(profile):
@@ -48,7 +65,7 @@ async def process_chat(messages):
             end_of_conversation=False,
         )
 
-    assessments = retrieve(profile)
+    assessments = retrieve(profile, top_k=5)
 
     recommendations = []
 
@@ -64,11 +81,11 @@ async def process_chat(messages):
 
     reply = generate_reply(
         profile,
-        [a.model_dump() for a in recommendations],
+        [a.model_dump(mode="json") for a in recommendations],
     )
 
     return ChatResponse(
         reply=reply,
         recommendations=recommendations,
-        end_of_conversation=True,
+        end_of_conversation=False,
     )
