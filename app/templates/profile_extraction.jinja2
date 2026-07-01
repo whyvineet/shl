@@ -16,6 +16,7 @@ Given the conversation, extract these fields:
 - complete: true if enough info to make recommendations, false if need clarification
 
 IMPORTANT: Accumulate ALL information from entire conversation. Preserve all previously mentioned values.
+Do not mark complete=true unless the role and seniority are both known, or the conversation explicitly makes the seniority clear.
 
 Your response must be ONLY this JSON (nothing before, nothing after):
 {

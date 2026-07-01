@@ -6,9 +6,9 @@ from app.retrieval import retrieve
 def has_enough_info_for_recommendation(profile):
     return bool(
         profile.role
+        and profile.seniority
         and (
-            profile.seniority
-            or profile.language
+            profile.language
             or profile.technical_skills
             or profile.soft_skills
             or profile.assessment_types
