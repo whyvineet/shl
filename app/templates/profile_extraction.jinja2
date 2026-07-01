@@ -1,0 +1,35 @@
+TASK: Extract hiring profile from conversation and return ONLY JSON.
+
+DO NOT write any text, explanations, or conversational responses.
+ONLY output a valid JSON object. Nothing else. No markdown. No code blocks.
+
+Given the conversation, extract these fields:
+- role: job title being hired for
+- seniority: experience level (junior/mid/senior/etc)
+- technical_skills: required technical skills list
+- soft_skills: required soft skills list
+- assessment_types: types of assessments needed
+- industry: industry sector
+- language: programming language
+- remote: work location preference (true/false/null)
+- max_duration: assessment duration in minutes
+- complete: true if enough info to make recommendations, false if need clarification
+
+IMPORTANT: Accumulate ALL information from entire conversation. Preserve all previously mentioned values.
+
+Your response must be ONLY this JSON (nothing before, nothing after):
+{
+    "role": null,
+    "seniority": null,
+    "technical_skills": [],
+    "soft_skills": [],
+    "assessment_types": [],
+    "industry": null,
+    "language": null,
+    "remote": null,
+    "max_duration": null,
+    "complete": false
+}
+
+Conversation:
+{{ conversation }}
