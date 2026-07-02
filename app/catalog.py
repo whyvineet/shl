@@ -51,7 +51,7 @@ def get_by_name(name: str):
     return _catalog_by_name.get(name.lower())
 
 
-def find_best_match(name: str, cutoff: float = 0.5):
+def find_best_match(name: str, cutoff: float = 0.65):
     catalog = get_catalog()
 
     exact = get_by_name(name)

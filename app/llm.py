@@ -107,7 +107,7 @@ async def extract_profile(messages) -> HiringProfile:
         text = _strip_code_fences(text)
         data = _parse_json_object(text)
         return HiringProfile(**data)
-    except LLMError:
+    except (LLMError, RuntimeError):
         raise
     except Exception as e:
         logger.error(f"Profile extraction failed, falling back to empty profile: {e}")
