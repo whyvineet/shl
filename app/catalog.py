@@ -1,3 +1,4 @@
+import difflib
 import json
 import logging
 from pathlib import Path
@@ -48,6 +49,61 @@ def get_by_id(entity_id: str):
 
 def get_by_name(name: str):
     return _catalog_by_name.get(name.lower())
+
+
+def find_best_match(name: str, cutoff: float = 0.5):
+    catalog = get_catalog()
+
+    exact = get_by_name(name)
+    if exact:
+        return exact
+
+    needle = name.lower().strip()
+    if not needle:
+        return None
+
+
+    if needle.isalpha() and len(needle) <= 6:
+        acronym_hits = []
+        for item in catalog:
+            words = [w for w in item["name"].replace("-", " ").split() if w[:1].isalpha()]
+            acronym = "".join(w[0] for w in words).lower()
+            if acronym == needle:
+                acronym_hits.append(item)
+        if len(acronym_hits) == 1:
+            return acronym_hits[0]
+        if len(acronym_hits) > 1:
+            return min(acronym_hits, key=lambda item: len(item["name"]))
+
+    substring_hits = [
+        item for item in catalog if needle in item["name"].lower()
+    ]
+    if len(substring_hits) == 1:
+        return substring_hits[0]
+
+    if len(substring_hits) > 1:
+        return min(substring_hits, key=lambda item: len(item["name"]))
+
+    names = [item["name"] for item in catalog]
+    close = difflib.get_close_matches(name, names, n=1, cutoff=cutoff)
+    if close:
+        return _catalog_by_name.get(close[0].lower())
+
+    return None
+
+
+def find_matches(names):
+    found = []
+    unresolved = []
+
+    for name in names:
+        match = find_best_match(name)
+        if match and match["entity_id"] not in {f["entity_id"] for f in found}:
+            found.append(match)
+        elif not match:
+            unresolved.append(name)
+
+    return found, unresolved
 
 
 def filter_catalog(

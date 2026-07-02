@@ -24,7 +24,14 @@ class ChatResponse(BaseModel):
     end_of_conversation: bool
 
 
+Intent = Literal["recommend", "compare", "off_topic", "injection", "chitchat"]
+
+
 class HiringProfile(BaseModel):
+    intent: Intent = "recommend"
+
+    compare_targets: List[str] = []
+
     role: str | None = None
     seniority: str | None = None
 

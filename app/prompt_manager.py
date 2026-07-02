@@ -19,6 +19,6 @@ def render_explanation(profile: str, recommendations: str) -> str:
     return template.render(profile=profile, recommendations=recommendations)
 
 
-def render_system_prompt() -> str:
-    template = jinja_env.get_template("system.jinja2")
-    return template.render()
+def render_comparison(items: str) -> str:
+    template = jinja_env.get_template("comparison.jinja2")
+    return template.render(items=items)
